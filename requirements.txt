@@ -1,0 +1,11 @@
+h5py==3.14.0
+joblib==1.5.1
+matplotlib==3.10.0
+networkx==3.5
+numexpr==2.11.0
+numpy==1.26.4
+openfermion==1.7.0
+openfermionpyscf==0.5
+pyscf==2.10.0
+scipy==1.16.0
+
