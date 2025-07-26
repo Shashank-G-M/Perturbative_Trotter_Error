@@ -3,7 +3,7 @@ import scipy as sp
 from scipy.optimize import minimize
 from opt_einsum import contract
 from .tensor_utils import *
-import copy
+from copy import copy
 
 
 
