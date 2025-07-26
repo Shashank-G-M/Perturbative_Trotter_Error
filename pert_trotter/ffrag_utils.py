@@ -4,6 +4,7 @@ from scipy.optimize import minimize
 from opt_einsum import contract
 from .tensor_utils import *
 from copy import copy
+from . import config
 
 
 
@@ -235,8 +236,8 @@ def sdgfro_frags_generator(obt, tbt, numtag = 10000, tol = 1e-4, ret_ops = True,
 
   idx_uuuu = np.ix_(*[range(0,i,2) for i in Htbt.shape])
   idx_dddd = np.ix_(*[range(1,i,2) for i in Htbt.shape])
-  idx_uudd = np.ix_(*[range(0,n_qubits,2), range(0,n_qubits,2), range(1,n_qubits,2), range(1,n_qubits,2)])
-  idx_dduu = np.ix_(*[range(1,n_qubits,2), range(1,n_qubits,2), range(0,n_qubits,2), range(0,n_qubits,2)])
+  idx_uudd = np.ix_(*[range(0,config.n_qubits,2), range(0,config.n_qubits,2), range(1,config.n_qubits,2), range(1,config.n_qubits,2)])
+  idx_dduu = np.ix_(*[range(1,config.n_qubits,2), range(1,config.n_qubits,2), range(0,config.n_qubits,2), range(0,config.n_qubits,2)])
 
   spac_tbt_1 = Htbt[idx_uuuu]
   spac_tbt_2 = Htbt[idx_uudd]
@@ -657,13 +658,13 @@ def build_FR_frag_tbt(coeffs, angles, N = None):
   Args:
       coeffs (list or 1d np.array): Coefficients as a vector
       angles (list or 1d np.array): Angles as a vector
-      N (int, optional): Number of spin/spacial orbitals in the fragment. Defaults to None, in which case it equals global parameter n_qubits.
+      N (int, optional): Number of spin/spacial orbitals in the fragment. Defaults to None, in which case it equals global parameter config.n_qubits.
 
   Returns:
       np.array: chemist two-body-tensor. Shape = (N,N,N,N).
   '''
   if N == None:
-    N = n_qubits
+    N = config.n_qubits
   coeff_mat = get_coeff_mat_from_coeffs(coeffs, N)
   u = get_u_from_angles(angles, N)
   return contract('ij,pi,qi,rj,sj -> pqrs', coeff_mat, u, u, u, u)
@@ -676,12 +677,12 @@ def build_FR_frag_tbt(coeffs, angles, N = None):
 
 
 
-def build_FR_frag_tbt_frmo_so(coeffs, angles, N = None): #len(coeffs) = N(N+1)/2. len(angles) = N(N-1)/2. N = number of spin orbitals = n_qubits
+def build_FR_frag_tbt_frmo_so(coeffs, angles, N = None): #len(coeffs) = N(N+1)/2. len(angles) = N(N-1)/2. N = number of spin orbitals = config.n_qubits
   '''
   Essentially same as build_FR_frag_tbt. So use that instead of this.
   '''
   if N == None:
-    N = n_qubits
+    N = config.n_qubits
 
   coeff_mat = np.zeros((N,N), dtype = 'complex128')
   idx = 0
