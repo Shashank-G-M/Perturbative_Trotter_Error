@@ -323,7 +323,7 @@ def eval_GS_HF_overlap(H, n_qubits, num_elecs, verify_Ssq_is_0 = True, tol = 1e-
 
 def eval_GS_CISD_overlap(JW_OF_sarray, n_qubits, num_elecs, verify_Sz_N_Ssq_evals = True):
   '''
-  Given JW_OF_sarray, return the overlap of the ground state with the CISD approximation to the ground state.
+  Given JW_OF_sarray, return the abs(overlap)^2 of the ground state with the CISD approximation to the ground state.
   Also can verify if Sz = 0, N = num_elecs and S^2 = 0 for the CISD ground state.
 
   Args:
@@ -336,10 +336,10 @@ def eval_GS_CISD_overlap(JW_OF_sarray, n_qubits, num_elecs, verify_Sz_N_Ssq_eval
   Returns:
       float: Overlap of the ground state with the CISD ground state.
   '''
-  v0, w0 = eigsh(JW_OF_sarray, k = 1, which='SA', return_eigenvectors=True)
+  v0, w0 = eigsh(np.real(JW_OF_sarray), k = 1, which='SA', return_eigenvectors=True)
   w0_sparse = sp.sparse.csc_matrix(w0)
 
-  proj_H, all_excitations = get_CI_proj_ham(JW_OF_sarray, n_excitations = 2, ret_excitations = True)
+  proj_H, all_excitations = get_CI_proj_ham(JW_OF_sarray, n_excitations = 2, n_qubits = n_qubits, num_elecs = num_elecs, ret_excitations = True)
   all_excitations_vec = np.zeros((2**n_qubits, len(all_excitations)))
   for i in range(len(all_excitations)):
     all_excitations_vec[:,[i]] = occ_str_to_state(all_excitations[i])
@@ -371,7 +371,7 @@ def eval_GS_CISD_overlap(JW_OF_sarray, n_qubits, num_elecs, verify_Sz_N_Ssq_eval
       print ('N is equal to num_elecs')
 
   overlap = (w0_sparse.T*CISD_w0_sparse)[0,0]
-  return overlap
+  return np.abs(overlap)**2
 
 
 
