@@ -212,7 +212,7 @@ def eval_tap_GS_CISD_overlap(JW_OF, n_qubits, num_elecs, verify_Sz_N_Ssq_evals =
   tapered_CI_states = get_tapered_CI_states(ref_det, [0,1,2], preserve_Sz=False)
   CIproj_tap_JW_OF_sarray = tapered_CI_states.T*tapered_JW_OF_sarray*tapered_CI_states
 
-  CISD_v0, CISD_w0 = eigsh(CIproj_tap_JW_OF_sarray, k = 1, which='SA', return_eigenvectors=True)
+  CISD_v0, CISD_w0 = eigsh(np.real(CIproj_tap_JW_OF_sarray), k = 1, which='SA', return_eigenvectors=True)
   CISD_w0_sarray = sp.sparse.csc_matrix(CISD_w0)
   CISD_w0_full_space_sarray = tapered_CI_states*CISD_w0_sarray
 
@@ -248,4 +248,4 @@ def eval_tap_GS_CISD_overlap(JW_OF, n_qubits, num_elecs, verify_Sz_N_Ssq_evals =
       print ('N is equal to num_elecs')
 
   overlap = (CISD_w0_full_space_sarray.T*w0_full_space_sarray)[0,0]
-  return overlap
+  return np.abs(overlap)**2
